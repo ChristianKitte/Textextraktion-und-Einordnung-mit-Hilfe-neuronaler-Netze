@@ -1,0 +1,5 @@
+Code 03
+Abhishek Singh, Text Detection from images using OpenCV
+Download: GitHub (Username ZER-0-NE) - https://github.com/ZER-0-NE/EAST-Detector-for-text-detection-using-OpenCV
+Letzter Zugriff: 24.08.2019
+Lizenz: MIT License

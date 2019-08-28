@@ -1,9 +1,0 @@
-These folders and their subfolders contain source code from another GitHub project. The comments
-made there apply. The used source code is licensed under the MIT License. The license text and a
-detailed reference can be found in the license subfolder. Many thanks to the author of the code.
-
-For reasons of clarity unneeded parts of the original code were not taken over. The original
-project can be found on the https://github.com/kurapan/CRNN page.
-
-For a better understanding the documentation has been supplemented in parts.
-
