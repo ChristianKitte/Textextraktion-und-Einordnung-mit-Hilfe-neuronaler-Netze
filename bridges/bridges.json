@@ -1,0 +1,8 @@
+{
+  "detector_module_alternative": "east_open_cv_bridge",
+  "detector_class_alternative": "EastOpenCvBridge",
+  "detector_module": "east_bridge",
+  "detector_class": "EastBridge",
+  "recognizer_module": "crnn_bridge",
+  "recognizer_class": "CrnnBridge"
+}
