@@ -150,4 +150,4 @@ if __name__ == '__main__':
 
     ## Database - Find specific keywords. The terms can only be evaluated as True, if certain preprocessings
     ## have been done and certain columns have been searched. TRUE must be returned for all search words!
-    evaluate_database(keywords, scanner)
+    # evaluate_database(keywords, scanner)
