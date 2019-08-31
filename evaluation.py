@@ -125,13 +125,6 @@ if __name__ == '__main__':
                              ['special_forest_black_sharp.jpg', 'special_forest_black_sharp'],
                              ['special_forest_black_sharp_blur.jpg', 'special_forest_black_sharp_blur']]
 
-    ## A list with defined examples for demonstration purposes
-    samplelist = [['001.jpg', '001jpg'],
-                  ['002.jpg', '002jpg'],
-                  ['003.jpg', '003jpg'],
-                  ['001.png', '001png'],
-                  ['002.png', '002png']]
-
     ## A list of predefined name modules for versions that are required as parameters for evaluate_char.
     versions = ['_sharp.jpg', '_forrest_sharp.jpg', '_sharp_blur.jpg', '_forrest_sharp_blur.jpg']
 
@@ -150,9 +143,6 @@ if __name__ == '__main__':
     ## text - detection and recognition whole picture
     # evaluate(evallist_text, scanner, os.path.join(const.EVALUATION_DIR, 'text'))
     # evaluate(evallist_special_text, scanner, os.path.join(const.EVALUATION_DIR, 'special_text'))
-
-    ## samples - detection and recognition whole picture
-    # evaluate(samplelist, scanner, const.SAMPLE_DIR)
 
     ## chars - recognition whole picture
     # evaluate_char(versions, 1, 12, 3, scanner, os.path.join(const.EVALUATION_DIR, 'chars'))
