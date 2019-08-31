@@ -7,8 +7,6 @@ OUTPUT_DIR = 'outcome'
 """output directory"""
 EVALUATION_DIR = 'evaluation'
 """evaluation directory"""
-SAMPLE_DIR = 'samples'
-"""sample directory"""
 
 DATABASE_JSON = 'data/ingrediens.json'
 """Location of the JSON database of ingredients"""
