@@ -38,6 +38,7 @@ class SpatialTransformer(Layer):
                  output_size,
                  **kwargs):
         self.locnet = localization_net
+        self.output_size = output_size
         super(SpatialTransformer, self).__init__(**kwargs)
 
     def build(self, input_shape):

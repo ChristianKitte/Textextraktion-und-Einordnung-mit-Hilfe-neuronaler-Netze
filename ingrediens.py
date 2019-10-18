@@ -27,9 +27,12 @@ class Ingredients():
         :param usePatch:If true, special characters contained in search words are converted to normal
         letters (e.g. ö -> o)
         """
-        self.usePatch = usePatch
-        self.items = items
-        self.search_items = {}
+        try:
+            self.usePatch = usePatch
+            self.items = items
+            self.search_items = {}
+        except:
+            print('Error in method {0} in module {1}'.format('init', 'ingrediens.py'))
 
     @staticmethod
     def instance(json_path, usePatch=True):
@@ -40,12 +43,16 @@ class Ingredients():
         letters (e.g. ö -> o).
         :return:An instance of the class Ingridiens.
         """
-        with open(json_path, mode='r', encoding='utf-8') as json_file:
-            json_data = json.load(json_file)
-            ingrediens = Ingredients(json_data['items'], usePatch)
-            ingrediens.update()
+        try:
+            with open(json_path, mode='r', encoding='utf-8') as json_file:
+                json_data = json.load(json_file)
+                ingrediens = Ingredients(json_data['items'], usePatch)
+                ingrediens.update()
 
-        return ingrediens
+            return ingrediens
+        except:
+            print('Error in method {0} in module {1}'.format('instance', 'ingrediens.py'))
+            return None
 
     @staticmethod
     def convert(excel_path, json_path):
@@ -54,45 +61,56 @@ class Ingredients():
         :param excel_path:The excel path.
         :param json_path:The json path.
         """
-        raw = pd.read_excel(excel_path)
-        ingrediens_data = Ingredients()
+        try:
+            raw = pd.read_excel(excel_path)
+            ingrediens_data = Ingredients()
 
-        for x in raw.values:
-            id = x[0]
-            e_number = str(x[1]).strip()
+            for x in raw.values:
+                id = x[0]
+                e_number = str(x[1]).strip()
 
-            ingrediens = str(x[2]).split(',')
-            ingrediens_list = [x.strip() for x in ingrediens]
+                ingrediens = str(x[2]).split(',')
+                ingrediens_list = [x.strip() for x in ingrediens]
 
-            remark = str(x[3])
-            annotation = str(x[4])
-            classification = str(x[5])
+                remark = str(x[3])
+                annotation = str(x[4])
+                classification = str(x[5])
 
-            keywords = str(x[6]).split(',')
-            keywords_list = [x.strip() for x in keywords]
+                keywords = str(x[6]).split(',')
+                keywords_list = [x.strip() for x in keywords]
 
-            ingredient_new = [id, e_number, ingrediens_list, remark, annotation, classification, keywords_list]
-            ingrediens_data.add(ingredient_new)
+                ingredient_new = [id, e_number, ingrediens_list, remark, annotation, classification, keywords_list]
+                ingrediens_data.add(ingredient_new)
 
-        ingrediens_data.update()
+            ingrediens_data.update()
 
-        with open(json_path, mode='w', encoding='utf-8') as json_file:
-            json.dump(ingrediens_data.__dict__, json_file, ensure_ascii=False)
+            with open(json_path, mode='w', encoding='utf-8') as json_file:
+                json.dump(ingrediens_data.__dict__, json_file, ensure_ascii=False)
+        except:
+            print('Error in method {0} in module {1}'.format('convert', 'ingrediens.py'))
 
     def __iter__(self):
         """Returns an iterator for the list of ingredients.
 
         :return:An iterator.
         """
-        return self
+        try:
+            return self
+        except:
+            print('Error in method {0} in module {1}'.format('iter', 'ingrediens.py'))
+            return None
 
     def next(self):
         """Goes through the list of ingredients (Generator).
 
         :return:The next Item
         """
-        for item in self.items:
-            yield item
+        try:
+            for item in self.items:
+                yield item
+        except:
+            print('Error in method {0} in module {1}'.format('next', 'ingrediens.py'))
+            return None
 
     def add(self, item):
         """Adds a new ingredient to the list of ingredients.
@@ -100,7 +118,10 @@ class Ingredients():
 
         :param item:The element to be added.
         """
-        self.items.append(item)
+        try:
+            self.items.append(item)
+        except:
+            print('Error in method {0} in module {1}'.format('add', 'ingrediens.py'))
 
     def contains(self, item):
         """Returns True and the ID of an ingredient if the transfer item could be assigned to a substance.
@@ -111,17 +132,21 @@ class Ingredients():
         :param item:The element (searchstring) for which a check is to be made.
         :return:True and the ID if exists, otherwise False.
         """
-        item = item.lower()
-        item = str(item).replace(' ', '')
+        try:
+            item = item.lower()
+            item = str(item).replace(' ', '')
 
-        if self.usePatch == True:
-            item = self.replaceChar(item)
+            if self.usePatch == True:
+                item = self.replaceChar(item)
 
-        if item in self.search_items:
-            id = self.search_items[item]
-            return True, id
-        else:
-            return False, -1
+            if item in self.search_items:
+                id = self.search_items[item]
+                return True, id
+            else:
+                return False, -1
+        except:
+            print('Error in method {0} in module {1}'.format('contains', 'ingrediens.py'))
+            return None
 
     def replaceChar(self, item):
         """Replaces the special characters ü, ö, ä with u, o, a
@@ -129,11 +154,15 @@ class Ingredients():
         :param item:The element (searchstring) for which a check is to be made.
         :return:The item with the replacements
         """
-        str(item).replace("ö", "o")
-        str(item).replace("ä", "a")
-        str(item).replace("ü", "u")
+        try:
+            str(item).replace("ö", "o")
+            str(item).replace("ä", "a")
+            str(item).replace("ü", "u")
 
-        return item
+            return item
+        except:
+            print('Error in method {0} in module {1}'.format('replaceChar', 'ingrediens.py'))
+            return None
 
     def replaceChar_in_String(self, item):
         """Searches the passed word for the letters ä, ö, ü.
@@ -141,13 +170,17 @@ class Ingredients():
         :param item:The word to analyze
         :return:True, if one of the umlauts was found
         """
-        search_list = ["ä", "ö", "ü"]
+        try:
+            search_list = ["ä", "ö", "ü"]
 
-        for x in search_list:
-            if item.find(x):
-                return True
+            for x in search_list:
+                if item.find(x):
+                    return True
 
-        return False
+            return False
+        except:
+            print('Error in method {0} in module {1}'.format('replaceChar_in_String', 'ingrediens.py'))
+            return None
 
     def get_item(self, id):
         """Returns an ingredient based on the ID of the substance.
@@ -156,8 +189,12 @@ class Ingredients():
         :param id:The ID for which an element is to be returned.
         :return:The associated element.
         """
-        x = [x for x in self.items if x[0] == id]
-        return x
+        try:
+            x = [x for x in self.items if x[0] == id]
+            return x
+        except:
+            print('Error in method {0} in module {1}'.format('get_item', 'ingrediens.py'))
+            return None
 
     def get_enumber(self, id):
         """Returns the name of an ingredient based on the ID of the substance.
@@ -165,7 +202,11 @@ class Ingredients():
         :param id:The Id for which an E-number is to be returned.
         :return:The corresponding E-number.
         """
-        return self.get_item(id)[0][1]
+        try:
+            return self.get_item(id)[0][1]
+        except:
+            print('Error in method {0} in module {1}'.format('get_enumber', 'ingrediens.py'))
+            return None
 
     def get_name(self, id):
         """Returns the name of an ingredient based on the ID of the substance.
@@ -173,7 +214,11 @@ class Ingredients():
         :param id:The ID for which a name is to be returned.
         :return:The corresponding name.
         """
-        return self.get_item(id)[0][2]
+        try:
+            return self.get_item(id)[0][2]
+        except:
+            print('Error in method {0} in module {1}'.format('get_name', 'ingrediens.py'))
+            return None
 
     def get_remark(self, id):
         """Returns the remark assigned to an ingredient based on the ID of the substance.
@@ -181,7 +226,11 @@ class Ingredients():
         :param id:The ID for which a comment is to be returned.
         :return:The corresponding remark.
         """
-        return self.get_item(id)[0][3]
+        try:
+            return self.get_item(id)[0][3]
+        except:
+            print('Error in method {0} in module {1}'.format('get_remark', 'ingrediens.py'))
+            return None
 
     def update(self):
         """Builds a dictionary based on the existing data. The search terms represent the key values, while
@@ -194,27 +243,30 @@ class Ingredients():
         Preprocessing converts the matching strings to lowercase letters and removes all blanks during the
         search.
         """
-        x = [x for x in self.items]
+        try:
+            x = [x for x in self.items]
 
-        for x in self.items:
-            # E-numbers can have attached letters. These must be retained.
-            e_number = str(x[1]).lower().strip()
-            e_number = e_number[0].replace('e', '') + e_number[1:]
-            e_number = e_number.strip()
+            for x in self.items:
+                # E-numbers can have attached letters. These must be retained.
+                e_number = str(x[1]).lower().strip()
+                e_number = e_number[0].replace('e', '') + e_number[1:]
+                e_number = e_number.strip()
 
-            self.search_items.update({'e' + e_number: x[0]})
-            self.search_items.update({'e-' + e_number: x[0]})
+                self.search_items.update({'e' + e_number: x[0]})
+                self.search_items.update({'e-' + e_number: x[0]})
 
-            for y in x[2]:
-                insert_string = str(y).strip().lower().replace(' ', '')
-                self.search_items.update({insert_string: x[0]})
+                for y in x[2]:
+                    insert_string = str(y).strip().lower().replace(' ', '')
+                    self.search_items.update({insert_string: x[0]})
 
-                if self.replaceChar_in_String(insert_string) == True:
-                    self.search_items.update({self.replaceChar(insert_string): x[0]})
+                    if self.replaceChar_in_String(insert_string) == True:
+                        self.search_items.update({self.replaceChar(insert_string): x[0]})
 
-            for y in x[6]:
-                insert_srting = str(y).strip().lower().replace(' ', '')
-                self.search_items.update({insert_srting: x[0]})
+                for y in x[6]:
+                    insert_srting = str(y).strip().lower().replace(' ', '')
+                    self.search_items.update({insert_srting: x[0]})
 
-                if self.replaceChar_in_String(insert_string) == True:
-                    self.search_items.update({self.replaceChar(insert_string): x[0]})
+                    if self.replaceChar_in_String(insert_string) == True:
+                        self.search_items.update({self.replaceChar(insert_string): x[0]})
+        except:
+            print('Error in method {0} in module {1}'.format('update', 'ingrediens.py'))

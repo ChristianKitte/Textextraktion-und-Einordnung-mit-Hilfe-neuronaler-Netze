@@ -10,6 +10,9 @@ The application of the auto function of the scanner class will also be demonstra
 import cv2
 
 import constant as const
+from annotation_constants.eval_annotation_constants import EVAL_ANNOTATION_CONTANTS
+from annotation_constants.neg_annotation_constants import NEG_ANNOTATION_CONTANTS
+from annotation_constants.pos_annotation_constants import POS_ANNOTATION_CONTANTS
 from scanner import Scanner
 
 
@@ -20,8 +23,14 @@ def auto(input, output):
     :param input:Path to the input image
     :param output:Path to the output image
     """
-    scanner = Scanner()
-    scanner.auto_scann(input, output)
+    try:
+        scanner = Scanner()
+        scanner.auto_scann(input, output,
+                           pos_annotation_constants=POS_ANNOTATION_CONTANTS,
+                           neg_annotation_constants=NEG_ANNOTATION_CONTANTS,
+                           eval_annotation_constants=EVAL_ANNOTATION_CONTANTS)
+    except:
+        print('Error in method {0} in module {1}'.format('auto', 'demo.py'))
 
 
 if __name__ == '__main__':
@@ -42,18 +51,24 @@ if __name__ == '__main__':
     # Output file (from the outcome directory)
     out_file = '001.jpg'
 
-    if version == 1:
-        auto(const.INPUT_DIR + '/' + in_file, const.OUTPUT_DIR + '/' + out_file)
-        exit(0)
-    elif version == 2:
-        scanner = Scanner()
+    try:
+        if version == 1:
+            auto(const.INPUT_DIR + '/' + in_file, const.OUTPUT_DIR + '/' + out_file)
+            exit(0)
+        elif version == 2:
+            scanner = Scanner()
 
-        img_in = cv2.imread(const.INPUT_DIR + '/' + in_file)[:, :, ::-1]
+            img_in = cv2.imread(const.INPUT_DIR + '/' + in_file)[:, :, ::-1]
 
-        if img_in is not None:
-            img_out = scanner.scann(img=img_in, print_detail=True)
-            cv2.imwrite(const.OUTPUT_DIR + '/' + out_file, img_out)
+            if img_in is not None:
+                img_out = scanner.scann(img=img_in, print_detail=True,
+                                        pos_annotation_constants=POS_ANNOTATION_CONTANTS,
+                                        neg_annotation_constants=NEG_ANNOTATION_CONTANTS,
+                                        eval_annotation_constants=EVAL_ANNOTATION_CONTANTS)
+                cv2.imwrite(const.OUTPUT_DIR + '/' + out_file, img_out)
 
-            print('Finished')
-        else:
-            print('Image not readable')
+                print('Finished')
+            else:
+                print('Image not readable')
+    except:
+        print('Error in method {0} in module {1}'.format('main', 'demo.py'))

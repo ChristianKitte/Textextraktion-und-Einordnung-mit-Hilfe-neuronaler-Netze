@@ -10,7 +10,7 @@ EVALUATION_DIR = 'evaluation'
 
 DATABASE_JSON = 'data/ingrediens.json'
 """Location of the JSON database of ingredients"""
-DATABASE_EXCEL = 'data/Lebensmittelinhaltsstoffe.xlsx'
+DATABASE_EXCEL = 'data/ingrediens.xlsx'
 """Optional location of Excel file of ingredients"""
 
 BRIDGES_JSON = 'bridges/bridges.json'

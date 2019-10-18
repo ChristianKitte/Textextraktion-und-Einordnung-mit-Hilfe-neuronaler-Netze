@@ -11,6 +11,9 @@ import shutil
 import cv2
 
 import constant
+from annotation_constants.eval_annotation_constants import EVAL_ANNOTATION_CONTANTS
+from annotation_constants.neg_annotation_constants import NEG_ANNOTATION_CONTANTS
+from annotation_constants.pos_annotation_constants import POS_ANNOTATION_CONTANTS
 from scanner import Scanner
 
 
@@ -24,23 +27,29 @@ def evaluate(evallist, scanner, basedir):
     :param scanner:An instance of the class Scanner.
     :param basedir:The parent directory to the passed directories (this must exist).
     """
-    for file, dir in evallist:
-        cur_dir = os.path.join(basedir, dir)
+    try:
+        for file, dir in evallist:
+            cur_dir = os.path.join(basedir, dir)
 
-        if os.path.exists(cur_dir):
-            shutil.rmtree(cur_dir)
+            if os.path.exists(cur_dir):
+                shutil.rmtree(cur_dir)
 
-        os.mkdir(cur_dir)
+            os.mkdir(cur_dir)
 
-        img_in = cv2.imread(os.path.join(basedir, file))[:, :, ::-1]
+            img_in = cv2.imread(os.path.join(basedir, file))[:, :, ::-1]
 
-        if img_in is not None:
-            img_out = scanner.scann(img=img_in, evaluation_mode=True)
-            cv2.imwrite(os.path.join(cur_dir, '001.jpg'), img_out)
+            if img_in is not None:
+                img_out = scanner.scann(img=img_in, evaluation_mode=True,
+                                        pos_annotation_constants=POS_ANNOTATION_CONTANTS,
+                                        neg_annotation_constants=NEG_ANNOTATION_CONTANTS,
+                                        eval_annotation_constants=EVAL_ANNOTATION_CONTANTS)
+                cv2.imwrite(os.path.join(cur_dir, '001.jpg'), img_out)
 
-            print('Finished')
-        else:
-            print('Image not readable')
+                print('Finished')
+            else:
+                print('Image not readable')
+    except:
+        print('Error in method {0} in module {1}'.format('evaluate', 'evaluation.py'))
 
 
 def evaluate_char(versions, count_from, count_to, zeros, scanner, basedir, format='.jpg'):
@@ -68,28 +77,32 @@ def evaluate_char(versions, count_from, count_to, zeros, scanner, basedir, forma
     :param format:The output format in the form of a valid file extension (e.g. .jpg). Supports all formats
     supported by Open CV
     """
-    for i in range(count_from, count_to + 1, 1):
-        i_str = str(i).zfill(zeros)
-        cur_out_dir = os.path.join(basedir, i_str)
+    try:
+        for i in range(count_from, count_to + 1, 1):
+            i_str = str(i).zfill(zeros)
+            cur_out_dir = os.path.join(basedir, i_str)
 
-        if os.path.exists(cur_out_dir):
-            shutil.rmtree(cur_out_dir)
+            if os.path.exists(cur_out_dir):
+                shutil.rmtree(cur_out_dir)
 
-        os.mkdir(cur_out_dir)
+            os.mkdir(cur_out_dir)
 
-        for name_x in versions:
-            img_name = i_str + name_x
-            img_in = cv2.imread(os.path.join(basedir, img_name))[:, :, ::-1]
+            for name_x in versions:
+                img_name = i_str + name_x
+                img_in = cv2.imread(os.path.join(basedir, img_name))[:, :, ::-1]
 
-            version = name_x[:-4]
+                version = name_x[:-4]
 
-            if img_in is not None:
-                predicted_text = scanner.predict_text(img=img_in)
-                cv2.imwrite(os.path.join(cur_out_dir, i_str + '_' + version + '_' + predicted_text + format), img_in)
+                if img_in is not None:
+                    predicted_text = scanner.predict_text(img=img_in)
+                    cv2.imwrite(os.path.join(cur_out_dir, i_str + '_' + version + '_' + predicted_text + format),
+                                img_in)
 
-                print('Finished')
-            else:
-                print('Image not readable')
+                    print('Finished')
+                else:
+                    print('Image not readable')
+    except:
+        print('Error in method {0} in module {1}'.format('evaluate_char', 'evaluation.py'))
 
 
 def evaluate_database(keywords, scanner):
@@ -99,9 +112,12 @@ def evaluate_database(keywords, scanner):
     :param keywords:A list with keywords
     :param scanner:An instance of the class Scanner.
     """
-    for term in keywords:
-        state, id, ident = scanner.db_contains(term)
-        print(term + ' evaluate to ' + str(state) + ' stands for ' + ident)
+    try:
+        for term in keywords:
+            state, id, ident = scanner.db_contains(term)
+            print(term + ' evaluate to ' + str(state) + ' stands for ' + ident)
+    except:
+        print('Error in method {0} in module {1}'.format('evaluate_database', 'evaluation.py'))
 
 
 if __name__ == '__main__':
@@ -113,41 +129,46 @@ if __name__ == '__main__':
     
     Methodenaufrufe müssen zunächst frei geschaltet werden. Hierfür das Hashtag entfernen.
     """
-    ## A list of defined images with normal text for evaluation purposes
-    evallist_text = [['text_black_sharp.jpg', 'text_black_sharp'],
-                     ['text_black_sharp_blur.jpg', 'text_black_sharp_blur'],
-                     ['text_forest_black_sharp.jpg', 'text_forest_black_sharp'],
-                     ['text_forest_black_sharp_blur.jpg', 'text_forest_black_sharp_blur']]
 
-    ## A list of defined images with special chars for evaluation purposes
-    evallist_special_text = [['special_black_sharp.jpg', 'special_black_sharp'],
-                             ['special_black_sharp_blur.jpg', 'special_black_sharp_blur'],
-                             ['special_forest_black_sharp.jpg', 'special_forest_black_sharp'],
-                             ['special_forest_black_sharp_blur.jpg', 'special_forest_black_sharp_blur']]
+    try:
+        ## A list of defined images with normal text for evaluation purposes
+        evallist_text = [['text_black_sharp.jpg', 'text_black_sharp'],
+                         ['text_black_sharp_blur.jpg', 'text_black_sharp_blur'],
+                         ['text_forest_black_sharp.jpg', 'text_forest_black_sharp'],
+                         ['text_forest_black_sharp_blur.jpg', 'text_forest_black_sharp_blur']]
 
-    ## A list of predefined name modules for versions that are required as parameters for evaluate_char.
-    versions = ['_sharp.jpg', '_forrest_sharp.jpg', '_sharp_blur.jpg', '_forrest_sharp_blur.jpg']
+        ## A list of defined images with special chars for evaluation purposes
+        evallist_special_text = [['special_black_sharp.jpg', 'special_black_sharp'],
+                                 ['special_black_sharp_blur.jpg', 'special_black_sharp_blur'],
+                                 ['special_forest_black_sharp.jpg', 'special_forest_black_sharp'],
+                                 ['special_forest_black_sharp_blur.jpg', 'special_forest_black_sharp_blur']]
 
-    keywords = ['E129', 'E 129', 'E  129', 'e129', 'e 129', 'e  129', 'E-129', 'E - 129', 'e-129', 'e - 129',
-                'E160e', 'E 160e', 'E  160e', 'e160e', 'e 160e', 'e  160e', 'E-160e', 'E - 160e', 'e-160e', 'e - 160e',
-                'E160 e', 'E 160 e', 'E  160 e', 'e160 e', 'e 160 e', 'e  160 e', 'E-160 e', 'E - 160 e', 'e-160 e',
-                'e - 160 e',
-                'Gelborange S', 'GelbOrange S', 'Gelborange s', 'GelbOrange s',
-                'Natriumdiacetat', 'NatriumDiacetat',
-                'Trinatriumcitrat', 'TrinatrIumcitrat',
-                'Gelborange', 'GelbOrange']
+        ## A list of predefined name modules for versions that are required as parameters for evaluate_char.
+        versions = ['_sharp.jpg', '_forrest_sharp.jpg', '_sharp_blur.jpg', '_forrest_sharp_blur.jpg']
 
-    scanner = Scanner(refresh_db=True)
-    const = constant
+        keywords = ['E129', 'E 129', 'E  129', 'e129', 'e 129', 'e  129', 'E-129', 'E - 129', 'e-129', 'e - 129',
+                    'E160e', 'E 160e', 'E  160e', 'e160e', 'e 160e', 'e  160e', 'E-160e', 'E - 160e', 'e-160e',
+                    'e - 160e',
+                    'E160 e', 'E 160 e', 'E  160 e', 'e160 e', 'e 160 e', 'e  160 e', 'E-160 e', 'E - 160 e', 'e-160 e',
+                    'e - 160 e',
+                    'Gelborange S', 'GelbOrange S', 'Gelborange s', 'GelbOrange s',
+                    'Natriumdiacetat', 'NatriumDiacetat',
+                    'Trinatriumcitrat', 'TrinatrIumcitrat',
+                    'Gelborange', 'GelbOrange']
 
-    ## text - detection and recognition whole picture
-    # evaluate(evallist_text, scanner, os.path.join(const.EVALUATION_DIR, 'text'))
-    # evaluate(evallist_special_text, scanner, os.path.join(const.EVALUATION_DIR, 'special_text'))
+        scanner = Scanner(refresh_db=True)
+        const = constant
 
-    ## chars - recognition whole picture
-    # evaluate_char(versions, 1, 12, 3, scanner, os.path.join(const.EVALUATION_DIR, 'chars'))
-    # evaluate_char(versions, 1, 7, 3, scanner, os.path.join(const.EVALUATION_DIR, 'special_chars'))
+        ## text - detection and recognition whole picture
+        # evaluate(evallist_text, scanner, os.path.join(const.EVALUATION_DIR, 'text'))
+        # evaluate(evallist_special_text, scanner, os.path.join(const.EVALUATION_DIR, 'special_text'))
 
-    ## Database - Find specific keywords. The terms can only be evaluated as True, if certain preprocessings
-    ## have been done and certain columns have been searched. TRUE must be returned for all search words!
-    # evaluate_database(keywords, scanner)
+        ## chars - recognition whole picture
+        # evaluate_char(versions, 1, 12, 3, scanner, os.path.join(const.EVALUATION_DIR, 'chars'))
+        # evaluate_char(versions, 1, 7, 3, scanner, os.path.join(const.EVALUATION_DIR, 'special_chars'))
+
+        ## Database - Find specific keywords. The terms can only be evaluated as True, if certain preprocessings
+        ## have been done and certain columns have been searched. TRUE must be returned for all search words!
+        # evaluate_database(keywords, scanner)
+    except:
+        print('Error in method {0} in module {1}'.format('main', 'evaluation.py'))

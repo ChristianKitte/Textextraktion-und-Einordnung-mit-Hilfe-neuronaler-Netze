@@ -37,23 +37,26 @@ class BoundingBoxImageHandler:
         :param output_dir:The output directory
         :param format:The format to be used using the extension without a dot
         """
-        img = cv2.imread(image)
+        try:
+            img = cv2.imread(image)
 
-        if img is not None:
-            cv2.imwrite(output_dir + '/master.' + format, img)
-            master_file = open(output_dir + '/master.txt', 'w')
+            if img is not None:
+                cv2.imwrite(output_dir + '/master.' + format, img)
+                master_file = open(output_dir + '/master.txt', 'w')
 
-            boxes = bounding_boxes
-            counter = start_at
+                boxes = bounding_boxes
+                counter = start_at
 
-            if len(boxes) > 0:
-                for box in boxes:
-                    BoundingBoxImageHandler.get_subimage(img, box, save_as=output_dir + '/' + str(counter).zfill(
-                        zeros) + '.' + format)
-                    master_file.write(str(counter).zfill(3) + '.' + format + '\n')
-                    counter = counter + 1
+                if len(boxes) > 0:
+                    for box in boxes:
+                        BoundingBoxImageHandler.get_subimage(img, box, save_as=output_dir + '/' + str(counter).zfill(
+                            zeros) + '.' + format)
+                        master_file.write(str(counter).zfill(3) + '.' + format + '\n')
+                        counter = counter + 1
 
-            master_file.close()
+                master_file.close()
+        except:
+            print('Error in method {0} in module {1}'.format('subimage_generator', 'bounding_box_image_handler.py'))
 
     @staticmethod
     def get_subimage(image, box, greyscale=False, save=True, save_as='new.jpg', show=False):
@@ -71,48 +74,52 @@ class BoundingBoxImageHandler:
         :param show:True if a preview is to be made, otherwise False.
         :return:The generated image section (np array).
         """
-        box = np.asarray(box)
+        try:
+            box = np.asarray(box)
 
-        ## (1) Crop the image by copying an area of the image
-        rect = cv2.boundingRect(box)
-        x, y, w, h = rect
+            ## (1) Crop the image by copying an area of the image
+            rect = cv2.boundingRect(box)
+            x, y, w, h = rect
 
-        ## It is possible that the x or y value is less than or equal to 0. This leads to
-        ## an error in the further process. Therefore, the smallest value is set to 1.
-        if x < 0:
-            x = 1
-        if y < 0:
-            y = 1
+            ## It is possible that the x or y value is less than or equal to 0. This leads to
+            ## an error in the further process. Therefore, the smallest value is set to 1.
+            if x < 0:
+                x = 1
+            if y < 0:
+                y = 1
 
-        croped = image[y:y + h, x:x + w].copy()
+            croped = image[y:y + h, x:x + w].copy()
 
-        ## (2) make mask
-        box = box - box.min(axis=0)
+            ## (2) make mask
+            box = box - box.min(axis=0)
 
-        mask = np.zeros(croped.shape[:2], np.uint8)
-        cv2.drawContours(mask, [box], -1, (255, 255, 255), -1, cv2.LINE_AA)
+            mask = np.zeros(croped.shape[:2], np.uint8)
+            cv2.drawContours(mask, [box], -1, (255, 255, 255), -1, cv2.LINE_AA)
 
-        ## (3) New image by bitwise AND comparison of mask and cropped image
-        new_image = cv2.bitwise_and(croped, croped, mask=mask)
+            ## (3) New image by bitwise AND comparison of mask and cropped image
+            new_image = cv2.bitwise_and(croped, croped, mask=mask)
 
-        ## (4) Add a white background by bitwise NOT comparison
-        bg = np.ones_like(croped, np.uint8) * 255
-        cv2.bitwise_not(bg, bg, mask=mask)
-        new_image = bg + new_image
+            ## (4) Add a white background by bitwise NOT comparison
+            bg = np.ones_like(croped, np.uint8) * 255
+            cv2.bitwise_not(bg, bg, mask=mask)
+            new_image = bg + new_image
 
-        ## (5) Use gray image, if desired
-        if greyscale == True:
-            new_image = cv2.cvtColor(new_image, cv2.COLOR_BGR2GRAY)
+            ## (5) Use gray image, if desired
+            if greyscale == True:
+                new_image = cv2.cvtColor(new_image, cv2.COLOR_BGR2GRAY)
 
-        ## (6) Display image via Open CV if desired
-        if show == True:
-            BoundingBoxImageHandler.show_image(new_image)
+            ## (6) Display image via Open CV if desired
+            if show == True:
+                BoundingBoxImageHandler.show_image(new_image)
 
-        ## (7) Save image via Open CV, if desired
-        if save == True:
-            BoundingBoxImageHandler.serialize_image(new_image, save_as)
+            ## (7) Save image via Open CV, if desired
+            if save == True:
+                BoundingBoxImageHandler.serialize_image(new_image, save_as)
 
-        return new_image
+            return new_image
+        except:
+            print('Error in method {0} in module {1}'.format('get_subimage', 'bounding_box_image_handler.py'))
+            return None
 
     @staticmethod
     def put_text(image, box, text, pos_annotation_constants):
@@ -133,27 +140,31 @@ class BoundingBoxImageHandler:
         :param pos_annotation_constants:An object that defines the text output (color, size,...).
         :return:The transfered image with the drawn text
         """
-        rect = cv2.boundingRect(box)
-        x, y, w, h = rect
+        try:
+            rect = cv2.boundingRect(box)
+            x, y, w, h = rect
 
-        text = str(text).replace("ö", "oe")
-        text = str(text).replace("ü", "ue")
-        text = str(text).replace("ä", "ae")
+            text = str(text).replace("ö", "oe")
+            text = str(text).replace("ü", "ue")
+            text = str(text).replace("ä", "ae")
 
-        text = str(text).replace("Ö", "Oe")
-        text = str(text).replace("Ü", "Ue")
-        text = str(text).replace("Ä", "Ae")
+            text = str(text).replace("Ö", "Oe")
+            text = str(text).replace("Ü", "Ue")
+            text = str(text).replace("Ä", "Ae")
 
-        (label_width, label_height), baseline = cv2.getTextSize(text, pos_annotation_constants.FONT(),
-                                                                pos_annotation_constants.SCALE(),
-                                                                pos_annotation_constants.THICKNESS())
+            (label_width, label_height), baseline = cv2.getTextSize(text, pos_annotation_constants.FONT(),
+                                                                    pos_annotation_constants.SCALE(),
+                                                                    pos_annotation_constants.THICKNESS())
 
-        cv2.putText(image[:, :, ::-1], text, (x, y - 3), pos_annotation_constants.FONT(),
-                    pos_annotation_constants.SCALE(),
-                    pos_annotation_constants.COLOR(),
-                    pos_annotation_constants.THICKNESS())
+            cv2.putText(image[:, :, ::-1], text, (x, y - 3), pos_annotation_constants.FONT(),
+                        pos_annotation_constants.SCALE(),
+                        pos_annotation_constants.COLOR(),
+                        pos_annotation_constants.THICKNESS())
 
-        return image
+            return image
+        except:
+            print('Error in method {0} in module {1}'.format('put_text', 'bounding_box_image_handler.py'))
+            return None
 
     @staticmethod
     def put_border(image, box, rgb_color, thickness=1):
@@ -167,11 +178,15 @@ class BoundingBoxImageHandler:
         :param thickness:The width of the border.
         :return:The transferred image with the drawn frames.
         """
-        r, g, b = rgb_color
-        cv2.polylines(image[:, :, ::-1], [box.astype(np.int32).reshape((-1, 1, 2))], True,
-                      color=(b, g, r), thickness=thickness)  # cv arbeitet mit BGR!
+        try:
+            r, g, b = rgb_color
+            cv2.polylines(image[:, :, ::-1], [box.astype(np.int32).reshape((-1, 1, 2))], True,
+                          color=(b, g, r), thickness=thickness)  # cv arbeitet mit BGR!
 
-        return image
+            return image
+        except:
+            print('Error in method {0} in module {1}'.format('put_border', 'bounding_box_image_handler.py'))
+            return None
 
     @staticmethod
     def serialize_image(image, path):
@@ -180,8 +195,11 @@ class BoundingBoxImageHandler:
         :param image:The image to save.
         :param path:The location of the image.
         """
-        if image is not None and os.path.exists(os.path.dirname(path)):
-            cv2.imwrite(path, image)
+        try:
+            if image is not None and os.path.exists(os.path.dirname(path)):
+                cv2.imwrite(path, image)
+        except:
+            print('Error in method {0} in module {1}'.format('serialize_image', 'bounding_box_image_handler.py'))
 
     @staticmethod
     def show_image(image):
@@ -189,9 +207,12 @@ class BoundingBoxImageHandler:
 
         :param image:The image to display.
         """
-        if image is not None:
-            cv2.imshow("Preview", image)
-            cv2.waitKey()
+        try:
+            if image is not None:
+                cv2.imshow("Preview", image)
+                cv2.waitKey()
+        except:
+            print('Error in method {0} in module {1}'.format('show_image', 'bounding_box_image_handler.py'))
 
     @staticmethod
     def separate_boxes(path):
@@ -203,35 +224,39 @@ class BoundingBoxImageHandler:
         :param path:The path of a text file with X and Y values.
         :return:A box in the format: [[a,b],[c,d],[e,f],[g,h]]
         """
-        if os.path.isfile(path):
-            file = open(path, mode='r')
+        try:
+            if os.path.isfile(path):
+                file = open(path, mode='r')
 
-            boxes = []
-            for line in file:
-                line_boxes = []
-
-                if (line.strip() != ''):
-                    coords = [int(item) for item in line.split(',') if item.split() != '']
-
-                    new_box = []
-                    i = 0
-                    for coord in coords:
-                        if i == 0 or i == 1:
-                            new_box.append(coord)
-                            i = i + 1
-
-                        if i == 2:
-                            line_boxes.append(new_box)
-
-                            new_box = []
-                            i = 0
-
-                    boxes.append(line_boxes)
+                boxes = []
+                for line in file:
                     line_boxes = []
 
-            return boxes
-        else:
-            return []
+                    if (line.strip() != ''):
+                        coords = [int(item) for item in line.split(',') if item.split() != '']
+
+                        new_box = []
+                        i = 0
+                        for coord in coords:
+                            if i == 0 or i == 1:
+                                new_box.append(coord)
+                                i = i + 1
+
+                            if i == 2:
+                                line_boxes.append(new_box)
+
+                                new_box = []
+                                i = 0
+
+                        boxes.append(line_boxes)
+                        line_boxes = []
+
+                return boxes
+            else:
+                return []
+        except:
+            print('Error in method {0} in module {1}'.format('separate_boxes', 'bounding_box_image_handler.py'))
+            return None
 
     @staticmethod
     def BGR_to_RGB(BGR):
@@ -240,7 +265,11 @@ class BoundingBoxImageHandler:
         :param BGR:Color in BGR format (Open CV)
         :return:The color in RGB format
         """
-        return (BGR[2], BGR[1], BGR[0])
+        try:
+            return (BGR[2], BGR[1], BGR[0])
+        except:
+            print('Error in method {0} in module {1}'.format('BGR_to_RGB', 'bounding_box_image_handler.py'))
+            return None
 
     @staticmethod
     def RGB_to_BGR(RGB):
@@ -249,4 +278,8 @@ class BoundingBoxImageHandler:
         :param RGB:Color in RGB format
         :return:The color in BGR format
         """
-        return (RGB[2], RGB[1], RGB[0])
+        try:
+            return (RGB[2], RGB[1], RGB[0])
+        except:
+            print('Error in method {0} in module {1}'.format('RGB_to_BGR', 'bounding_box_image_handler.py'))
+            return None
