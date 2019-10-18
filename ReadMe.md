@@ -1,1 +1,1 @@
-Erstellung eines prototypischen Systems zur Extraktion und semantischen Einordnung von Texten aus Rastergrafiken im RGB Farbraum auf Basis neuronaler Netze am Beispiel einer Liste von Lebensmittelinhaltsstoffen
+Diese Seite enthält Code, welcher im Rahmen einer Bachelorarbeit mit dem Thema "Erstellung eines prototypischen Systems zur Extraktion und semantischen Einordnung von Texten aus Rastergrafiken im RGB Farbraum auf Basis neuronaler Netze am Beispiel einer Liste von Lebensmittelinhaltsstoffen" im SS 2019 entstand.
